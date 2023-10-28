@@ -7,10 +7,14 @@ use diesel::r2d2::{self, ConnectionManager};
 
 pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
+mod helpers;
+mod machines;
 mod models;
+mod properties;
+mod reservations;
+mod roles;
 mod schema;
 mod users;
-mod helpers;
 
 #[actix_web::main] // or #[tokio::main]
 async fn main() -> std::io::Result<()> {
@@ -30,12 +34,32 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::default())
-            .route("/", web::get().to(|| async { "Actix REST API" }))
+            .route("/", web::get().to(|| async { "1 REST API" }))
             .service(users::index)
             .service(users::create)
             .service(users::show)
             .service(users::update)
             .service(users::destroy)
+            .service(roles::index)
+            .service(roles::create)
+            .service(roles::show)
+            .service(roles::update)
+            .service(roles::destroy)
+            .service(properties::index)
+            .service(properties::create)
+            .service(properties::show)
+            .service(properties::update)
+            .service(properties::destroy)
+            .service(machines::index)
+            .service(machines::create)
+            .service(machines::show)
+            .service(machines::update)
+            .service(machines::destroy)
+            .service(reservations::index)
+            .service(reservations::create)
+            .service(reservations::show)
+            .service(reservations::update)
+            .service(reservations::destroy)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
