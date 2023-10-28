@@ -19,10 +19,12 @@ async fn index() -> Result<HttpResponse, Error> {
       /    /    _|_
       \   /    /\ /\
        \ /    /__v__\
-        '    |       |
+        '    |  3ds  |
              |     .#|
              |#.  .##|
              |#######|
-             |#######|"#,
+             |#######|
+             
+  powered by Beutler n Bois"#,
     ))
 }

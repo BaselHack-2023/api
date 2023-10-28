@@ -52,7 +52,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::default())
-            .route("/", web::get().to(|| async { "1 REST API" }))
+            .route("/", web::get().to(|| async { "3ds REST API" }))
             .service(tea::index)
             .service(users::index)
             .service(users::create)
