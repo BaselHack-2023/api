@@ -1,7 +1,7 @@
 # Dockerfile for Rust Actix Web Service
 
 # Set the base image
-FROM rust:alpine3.18
+FROM rust:1-bullseye
 
 # Set environment variables
 ENV PORT=8080
