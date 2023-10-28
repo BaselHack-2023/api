@@ -16,6 +16,7 @@ mod properties;
 mod reservations;
 mod roles;
 mod schema;
+mod tea;
 mod users;
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
@@ -59,7 +60,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::default())
             .wrap(cors)
-            .route("/", web::get().to(|| async { "1 REST API" }))
+            .route("/", web::get().to(|| async { "Beutler REST API" }))
             .service(users::index)
             .service(users::create)
             .service(users::show)
