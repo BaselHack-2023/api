@@ -36,11 +36,14 @@ async fn main() -> std::io::Result<()> {
 
     // run the migrations on server startup
     {
+        println!("Running database migrations...");
         let conn = pool.get().await.unwrap();
         conn.interact(|conn| conn.run_pending_migrations(MIGRATIONS).map(|_| ()))
             .await
             .unwrap()
             .unwrap();
+
+        println!("Migrations are up to date!")
     }
 
     HttpServer::new(move || {
