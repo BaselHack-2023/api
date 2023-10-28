@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  pg:
+    image: postgres:14.2-alpine
+    container_name: docker_pg
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
