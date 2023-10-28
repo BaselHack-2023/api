@@ -3,6 +3,7 @@ use actix_web::{delete, get, post, put, web, Error, HttpResponse};
 use diesel::prelude::*;
 use uuid::Uuid;
 
+use crate::helpers::{ErrorResponse, SuccessResponse};
 use crate::models::user::{NewUser, User, UserPayload};
 
 type DbError = Box<dyn std::error::Error + Send + Sync>;
@@ -16,7 +17,11 @@ async fn index(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
     .await?
     .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Ok().json(users))
+    Ok(HttpResponse::Ok().json(SuccessResponse {
+        status: 200,
+        message: "OK".to_string(),
+        data: users,
+    }))
 }
 
 #[post("/users")]
@@ -31,7 +36,11 @@ async fn create(
     .await?
     .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Created().json(user))
+    Ok(HttpResponse::Created().json(SuccessResponse {
+        status: 201,
+        message: "Created".to_string(),
+        data: user,
+    }))
 }
 
 #[get("/users/{id}")]
@@ -43,7 +52,18 @@ async fn show(id: web::Path<Uuid>, pool: web::Data<DbPool>) -> Result<HttpRespon
     .await?
     .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Ok().json(user))
+    if user.is_none() {
+        return Ok(HttpResponse::NotFound().json(ErrorResponse {
+            status: 404,
+            message: "User not found".to_string(),
+        }));
+    }
+
+    Ok(HttpResponse::Ok().json(SuccessResponse {
+        status: 200,
+        message: "OK".to_string(),
+        data: user,
+    }))
 }
 
 #[put("/users/{id}")]
@@ -59,7 +79,11 @@ async fn update(
     .await?
     .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Ok().json(user))
+    Ok(HttpResponse::Ok().json(SuccessResponse {
+        status: 200,
+        message: "OK".to_string(),
+        data: user,
+    }))
 }
 
 #[delete("/users/{id}")]
@@ -69,7 +93,13 @@ async fn destroy(id: web::Path<Uuid>, pool: web::Data<DbPool>) -> Result<HttpRes
         delete(id.into_inner(), &mut conn)
     })
     .await?
-    .map(|user| HttpResponse::Ok().json(user))
+    .map(|user| {
+        HttpResponse::Ok().json(SuccessResponse {
+            status: 200,
+            message: "Deleted".to_string(),
+            data: user,
+        })
+    })
     .map_err(actix_web::error::ErrorInternalServerError)?;
 
     Ok(result)
@@ -87,7 +117,9 @@ fn add(payload: &UserPayload, conn: &mut PgConnection) -> Result<User, DbError> 
 
     let res = diesel::insert_into(users)
         .values(&new_user)
+        .returning(users::all_columns())
         .get_result(conn)?;
+
     Ok(res)
 }
 

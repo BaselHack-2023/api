@@ -10,6 +10,7 @@ pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 mod models;
 mod schema;
 mod users;
+mod helpers;
 
 #[actix_web::main] // or #[tokio::main]
 async fn main() -> std::io::Result<()> {
