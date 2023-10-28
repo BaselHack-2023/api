@@ -80,6 +80,7 @@ fn add(payload: &UserPayload, conn: &mut PgConnection) -> Result<User, DbError> 
 
     let new_user = NewUser {
         name: payload.name.as_str(),
+        role: payload.role,
         created_at: chrono::Local::now().naive_local(),
         updated_at: chrono::Local::now().naive_local(),
     };
@@ -116,7 +117,11 @@ fn update_by_id(
     use crate::schema::users::dsl::*;
 
     let user = diesel::update(users.find(user_id))
-        .set(name.eq(payload.name.to_string()))
+        .set((
+            name.eq(payload.name.to_string()),
+            role.eq(payload.role),
+            updated_at.eq(chrono::Local::now().naive_local()),
+        ))
         .get_result::<User>(conn)?;
     Ok(user)
 }
