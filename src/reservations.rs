@@ -1,6 +1,7 @@
 use super::DbPool;
 use actix_web::{delete, get, post, put, web, Error, HttpResponse};
 use diesel::prelude::*;
+use serde::Deserialize;
 use uuid::Uuid;
 
 use crate::helpers::{ErrorResponse, SuccessResponse};
@@ -8,11 +9,25 @@ use crate::models::reservation::{NewReservation, Reservation, ReservationPayload
 
 type DbError = Box<dyn std::error::Error + Send + Sync>;
 
+#[derive(Deserialize)]
+struct QueryParams {
+    date: Option<String>,
+}
+
 #[get("/reservations")]
-async fn index(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+async fn index(
+    info: web::Query<QueryParams>,
+    pool: web::Data<DbPool>,
+) -> Result<HttpResponse, Error> {
     let reservations = web::block(move || {
         let mut conn = pool.get()?;
-        find_all(&mut conn)
+
+        if info.date.is_none() {
+            return find_all(&mut conn);
+        }
+        let date: chrono::NaiveDate = info.date.is_some().to_string().parse().unwrap();
+
+        find_all_by_date(date, &mut conn)
     })
     .await?
     .map_err(actix_web::error::ErrorInternalServerError)?;
@@ -129,6 +144,25 @@ fn find_all(conn: &mut PgConnection) -> Result<Vec<Reservation>, DbError> {
     use crate::schema::reservations::dsl::*;
 
     let items = reservations.load::<Reservation>(conn)?;
+    Ok(items)
+}
+
+fn find_all_by_date(
+    date: chrono::NaiveDate,
+    conn: &mut PgConnection,
+) -> Result<Vec<Reservation>, DbError> {
+    use crate::schema::reservations::dsl::*;
+
+    // Filter by date
+    let items = reservations
+        .filter(start_time.between(
+            date.and_hms_opt(0, 0, 0).unwrap(),
+            date.and_hms_opt(23, 59, 59).unwrap(),
+        ))
+        .order(start_time.asc())
+        .limit(10)
+        .load::<Reservation>(conn)?;
+
     Ok(items)
 }
 
