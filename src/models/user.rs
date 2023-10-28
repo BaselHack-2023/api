@@ -7,6 +7,7 @@ pub struct User {
     pub id: Uuid,
     pub name: String,
     pub role: Uuid,
+    pub property: Option<Uuid>,
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: chrono::NaiveDateTime,
 }
@@ -16,6 +17,7 @@ pub struct User {
 pub struct NewUser<'a> {
     pub name: &'a str,
     pub role: Uuid,
+    pub property: Option<Uuid>,
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: chrono::NaiveDateTime,
 }
@@ -24,4 +26,5 @@ pub struct NewUser<'a> {
 pub struct UserPayload {
     pub name: String,
     pub role: Uuid,
+    pub property: Option<Uuid>,
 }

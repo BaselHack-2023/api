@@ -9,7 +9,8 @@ ENV PORT=8080
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     libssl-dev \
-    pkg-config
+    pkg-config \
+    libpq-dev
 
 # Copy source code
 COPY . /usr/src/api

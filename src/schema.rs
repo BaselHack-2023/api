@@ -50,13 +50,13 @@ diesel::table! {
         id -> Uuid,
         name -> Varchar,
         role -> Uuid,
+        property -> Nullable<Uuid>,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }
 }
 
 diesel::joinable!(machines -> properties (property));
-diesel::joinable!(properties -> users (owner));
 diesel::joinable!(reservations -> machines (machine));
 diesel::joinable!(reservations -> users (owner));
 diesel::joinable!(users -> roles (role));

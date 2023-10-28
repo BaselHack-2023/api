@@ -111,6 +111,7 @@ fn add(payload: &UserPayload, conn: &mut PgConnection) -> Result<User, DbError> 
     let new_user = NewUser {
         name: payload.name.as_str(),
         role: payload.role,
+        property: payload.property,
         created_at: chrono::Local::now().naive_local(),
         updated_at: chrono::Local::now().naive_local(),
     };
@@ -152,6 +153,7 @@ fn update_by_id(
         .set((
             name.eq(payload.name.to_string()),
             role.eq(payload.role),
+            property.eq(payload.property),
             updated_at.eq(chrono::Local::now().naive_local()),
         ))
         .get_result::<User>(conn)?;

@@ -13,6 +13,7 @@ CREATE TABLE users (
     id UUID DEFAULT Uuid_generate_v4 (),
     name VARCHAR NOT NULL,
     role UUID NOT NULL,
+    property UUID,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     PRIMARY KEY (id),
