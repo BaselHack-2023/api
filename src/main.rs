@@ -61,6 +61,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .wrap(cors)
             .route("/", web::get().to(|| async { "Beutler REST API" }))
+            .service(tea::index)
             .service(users::index)
             .service(users::create)
             .service(users::show)
