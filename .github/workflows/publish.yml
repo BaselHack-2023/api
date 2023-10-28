@@ -28,6 +28,12 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Declare some variables
+        shell: bash
+        run: |
+          echo "sha_short=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+          echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> "$GITHUB_ENV"
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -40,5 +46,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${GITHUB_SHA}
+          tags: ${{ env.sha_short }}
           labels: ${{ steps.meta.outputs.labels }}
