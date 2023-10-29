@@ -5,6 +5,8 @@ diesel::table! {
         id -> Uuid,
         name -> Varchar,
         property -> Uuid,
+        status -> Varchar,
+        eta -> Timestamp,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }
@@ -31,6 +33,7 @@ diesel::table! {
         owner -> Uuid,
         start_time -> Timestamp,
         end_time -> Timestamp,
+        shared -> Bool,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }

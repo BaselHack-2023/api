@@ -1,7 +1,7 @@
 use super::DbPool;
 use actix_web::{delete, get, post, put, web, Error, HttpResponse};
 use diesel::prelude::*;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::helpers::{ErrorResponse, SuccessResponse};
@@ -9,7 +9,7 @@ use crate::models::reservation::{NewReservation, Reservation, ReservationPayload
 
 type DbError = Box<dyn std::error::Error + Send + Sync>;
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct QueryParams {
     date: Option<String>,
 }
@@ -128,6 +128,7 @@ fn add(payload: &ReservationPayload, conn: &mut PgConnection) -> Result<Reservat
         machine: payload.machine,
         start_time: payload.start_time,
         end_time: payload.end_time,
+        shared: payload.shared,
         created_at: chrono::Local::now().naive_local(),
         updated_at: chrono::Local::now().naive_local(),
     };
@@ -193,6 +194,7 @@ fn update_by_id(
             machine.eq(payload.machine),
             start_time.eq(payload.start_time),
             end_time.eq(payload.end_time),
+            shared.eq(payload.shared),
             updated_at.eq(chrono::Local::now().naive_local()),
         ))
         .get_result::<Reservation>(conn)?;

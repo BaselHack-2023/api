@@ -111,6 +111,8 @@ fn add(payload: &MachinePayload, conn: &mut PgConnection) -> Result<Machine, DbE
     let new_machine = NewMachine {
         name: payload.name.as_str(),
         property: payload.property,
+        status: payload.status.as_str(),
+        eta: payload.eta,
         created_at: chrono::Local::now().naive_local(),
         updated_at: chrono::Local::now().naive_local(),
     };
@@ -152,6 +154,8 @@ fn update_by_id(
         .set((
             name.eq(payload.name.to_string()),
             property.eq(payload.property),
+            status.eq(payload.status.to_string()),
+            eta.eq(payload.eta),
             updated_at.eq(chrono::Local::now().naive_local()),
         ))
         .get_result::<Machine>(conn)?;

@@ -9,6 +9,7 @@ pub struct Reservation {
     pub machine: Uuid,
     pub start_time: chrono::NaiveDateTime,
     pub end_time: chrono::NaiveDateTime,
+    pub shared: bool,
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: chrono::NaiveDateTime,
 }
@@ -20,6 +21,7 @@ pub struct NewReservation {
     pub machine: Uuid,
     pub start_time: chrono::NaiveDateTime,
     pub end_time: chrono::NaiveDateTime,
+    pub shared: bool,
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: chrono::NaiveDateTime,
 }
@@ -30,4 +32,5 @@ pub struct ReservationPayload {
     pub machine: Uuid,
     pub start_time: chrono::NaiveDateTime,
     pub end_time: chrono::NaiveDateTime,
+    pub shared: bool,
 }

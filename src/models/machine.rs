@@ -7,6 +7,8 @@ pub struct Machine {
     pub id: Uuid,
     pub name: String,
     pub property: Uuid,
+    pub status: String,
+    pub eta: chrono::NaiveDateTime,
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: chrono::NaiveDateTime,
 }
@@ -16,6 +18,8 @@ pub struct Machine {
 pub struct NewMachine<'a> {
     pub name: &'a str,
     pub property: Uuid,
+    pub status: &'a str,
+    pub eta: chrono::NaiveDateTime,
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: chrono::NaiveDateTime,
 }
@@ -24,4 +28,6 @@ pub struct NewMachine<'a> {
 pub struct MachinePayload {
     pub name: String,
     pub property: Uuid,
+    pub status: String,
+    pub eta: chrono::NaiveDateTime,
 }
