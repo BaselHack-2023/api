@@ -10,6 +10,7 @@ use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 mod helpers;
+mod items;
 mod machines;
 mod metrics;
 mod models;
@@ -17,6 +18,7 @@ mod properties;
 mod reservations;
 mod roles;
 mod schema;
+mod stable;
 mod tea;
 mod users;
 
@@ -64,6 +66,7 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(|| async { "Beutler REST API" }))
             .service(tea::index)
             .service(metrics::index)
+            .service(stable::stream)
             .service(users::index)
             .service(users::create)
             .service(users::show)
@@ -89,6 +92,11 @@ async fn main() -> std::io::Result<()> {
             .service(reservations::show)
             .service(reservations::update)
             .service(reservations::destroy)
+            .service(items::index)
+            .service(items::create)
+            .service(items::show)
+            .service(items::update)
+            .service(items::destroy)
     })
     .bind(("0.0.0.0", 8080))?
     .run()

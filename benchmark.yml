@@ -1,0 +1,77 @@
+---
+
+concurrency: 4
+base: 'http://localhost:8080'
+iterations: 1000
+rampup: 2
+
+plan:
+  - name: Fetch users
+    request:
+      url: /users
+    assign: users
+
+  - name: Assert request response code
+    assert:
+      key: users.status
+      value: 200
+
+  - name: Fetch roles
+    request:
+      url: /roles
+    assign: roles
+
+  - name: Assert request response code
+    assert:
+      key: roles.status
+      value: 200
+  
+  - name: Fetch machines
+    request:
+      url: /machines
+    assign: machines
+
+  - name: Assert request response code
+    assert:
+      key: machines.status
+      value: 200
+  
+  - name: Fetch properties
+    request:
+      url: /properties
+    assign: properties
+
+  - name: Assert request response code
+    assert:
+      key: properties.status
+      value: 200
+  
+  - name: Fetch reservations
+    request:
+      url: /reservations
+    assign: reservations
+
+  - name: Assert request response code
+    assert:
+      key: reservations.status
+      value: 200
+
+  - name: Fetch items
+    request:
+      url: /items
+    assign: items
+
+  - name: Assert request response code
+    assert:
+      key: items.status
+      value: 200
+    
+  - name: Fetch tea
+    request:
+      url: /tea
+    assign: tea
+
+  - name: Assert request response code
+    assert:
+      key: tea.status
+      value: 418

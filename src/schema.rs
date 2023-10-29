@@ -1,6 +1,18 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    items (id) {
+        id -> Uuid,
+        name -> Varchar,
+        size -> Varchar,
+        colors -> Varchar,
+        owner -> Uuid,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     machines (id) {
         id -> Uuid,
         name -> Varchar,
@@ -59,12 +71,14 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(items -> users (owner));
 diesel::joinable!(machines -> properties (property));
 diesel::joinable!(reservations -> machines (machine));
 diesel::joinable!(reservations -> users (owner));
 diesel::joinable!(users -> roles (role));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    items,
     machines,
     properties,
     reservations,
