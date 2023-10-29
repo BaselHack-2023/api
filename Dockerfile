@@ -1,28 +1,46 @@
-# Dockerfile for Rust Actix Web Service
+# syntax=docker/dockerfile:1.4
+FROM rust:buster AS base
 
-# Set the base image
-FROM rust:1-bullseye
+ENV USER=root
 
-# Set environment variables
-ENV PORT=8080
+WORKDIR /code
+RUN cargo init
+COPY Cargo.toml /code/Cargo.toml
+RUN cargo fetch
+COPY . /code
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    libssl-dev \
-    pkg-config \
-    libpq-dev
+FROM base AS development
 
-# Copy source code
-COPY . /usr/src/api
+EXPOSE 8080
 
-# Set working directory
-WORKDIR /usr/src/api
+CMD [ "cargo", "run", "--offline" ]
 
-# Build the application
-RUN cargo build --release
+FROM base AS dev-envs
 
-# Expose port
-EXPOSE $PORT
+EXPOSE 8000
+RUN <<EOF
+apt-get update
+apt-get install -y --no-install-recommends git libpq-dev && rm -rf /var/lib/apt/lists/*
+EOF
 
-# Run the application
-CMD ["cargo", "run", "--release"]
+RUN <<EOF
+useradd -s /bin/bash -m vscode
+groupadd docker
+usermod -aG docker vscode
+EOF
+# install Docker tools (cli, buildx, compose)
+COPY --from=gloursdocker/docker / /
+CMD [ "cargo", "run", "--offline" ]
+
+FROM base AS builder
+
+RUN cargo build --release --offline
+
+FROM debian:buster-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev && rm -rf /var/lib/apt/lists/*
+EXPOSE 8080
+
+COPY --from=builder /code/target/release/api /api
+
+CMD [ "/api" ]

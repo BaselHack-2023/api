@@ -18,7 +18,6 @@ mod properties;
 mod reservations;
 mod roles;
 mod schema;
-mod stable;
 mod tea;
 mod users;
 
@@ -66,7 +65,6 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(|| async { "Beutler REST API" }))
             .service(tea::index)
             .service(metrics::index)
-            .service(stable::stream)
             .service(users::index)
             .service(users::create)
             .service(users::show)
