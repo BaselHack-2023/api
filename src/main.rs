@@ -9,6 +9,7 @@ use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 
 pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
+mod favicon;
 mod helpers;
 mod items;
 mod machines;
@@ -64,6 +65,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .wrap(cors)
             .route("/", web::get().to(|| async { "Beutler REST API" }))
+            .service(favicon::favicon)
             .service(tea::index)
             .service(metrics::index)
             .service(stable::stream)
