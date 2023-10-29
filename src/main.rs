@@ -11,6 +11,7 @@ pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 mod helpers;
 mod machines;
+mod metrics;
 mod models;
 mod properties;
 mod reservations;
@@ -62,6 +63,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .route("/", web::get().to(|| async { "Beutler REST API" }))
             .service(tea::index)
+            .service(metrics::index)
             .service(users::index)
             .service(users::create)
             .service(users::show)
